@@ -1,23 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import "./App.css";
 
 function App() {
+  const schema = z.object({
+    amount: z.string().min(1, { message: "Please enter the amount" }),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      amount: "",
+    },
+    resolver: zodResolver(schema),
+  });
+
+  const onSubmit = (value) => {
+    try {
+      console.log(value);
+    } catch (error) {
+      
+    }
+  };
+
+  // console.log(errors?.amount?.message);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div class="mb-3">
+          <label class="form-label">
+            Enter Your Amount
+          </label>
+          <input
+            type="number"
+            class="form-control"
+            {...register("amount")}
+          />
+        </div>
+
+        {errors && 
+          <label className="error">{errors?.amount?.message}</label>
+        }
+
+        <button type="submit" class="btn btn-primary">
+          Submit
+        </button>
+      </form>
     </div>
   );
 }
